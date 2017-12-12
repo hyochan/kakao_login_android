@@ -1,6 +1,9 @@
 # kakao_login_android
 Android sample project for kakao login.
 
+## Changelogs
+- kakao sdk 1.7.0
+
 카카오 로그인 샘플 프로젝트 입니다.
 
 <p>
