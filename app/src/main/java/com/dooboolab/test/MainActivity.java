@@ -63,10 +63,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   private List<AuthType> getAuthTypes() {
     final List<AuthType> availableAuthTypes = new ArrayList<>();
-    if (Session.getAuthCodeManager().isTalkLoginAvailable()) {
+    if (Session.getCurrentSession().getAuthCodeManager().isTalkLoginAvailable()) {
       availableAuthTypes.add(AuthType.KAKAO_TALK);
     }
-    if (Session.getAuthCodeManager().isStoryLoginAvailable()) {
+    if (Session.getCurrentSession().getAuthCodeManager().isStoryLoginAvailable()) {
       availableAuthTypes.add(AuthType.KAKAO_STORY);
     }
     availableAuthTypes.add(AuthType.KAKAO_ACCOUNT);
@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   @SuppressWarnings("deprecation")
   private ListAdapter createLoginAdapter(final Item[] authItems) {
-        /*
-          가능한 auth type들을 유저에게 보여주기 위한 준비.
-         */
+    /*
+      가능한 auth type들을 유저에게 보여주기 위한 준비.
+     */
     return new ArrayAdapter<Item>(
         this,
         android.R.layout.select_dialog_item,
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         break;
       case R.id.btn_logout:
         Log.d(TAG, "btnLogout clicked");
-        UserManagement.requestLogout(new LogoutResponseCallback() {
+        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
           @Override
           public void onSessionClosed(ErrorResult errorResult) {
             Log.d(TAG, "sessionClosed!!\n" + errorResult.toString());
@@ -277,11 +277,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onSessionOpened() {
-      Toast.makeText(
-          MainActivity.this,
-          "Logged in!\ntoken: " + Session.getCurrentSession().getTokenInfo(),
-          Toast.LENGTH_SHORT
-      ).show();
+      if (Session.getCurrentSession().getTokenInfo() != null) {
+        Toast.makeText(
+            MainActivity.this,
+            "Logged in!\ntoken: " + Session.getCurrentSession().getAccessToken(),
+            Toast.LENGTH_SHORT
+        ).show();
+      }
     }
 
     @Override
@@ -294,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   private void requestMe() {
     Log.d(TAG, "requestMe");
-    UserManagement.requestMe(new MeResponseCallback() {
+    UserManagement.getInstance().requestMe(new MeResponseCallback() {
       @Override
       public void onFailure(ErrorResult errorResult) {
         String message = "failed to get user info. msg=" + errorResult;
