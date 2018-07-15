@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   }
 
   public void openSession(final AuthType authType) {
-    Session.getCurrentSession().open(authType, (Activity) getApplicationContext());
+    Session.getCurrentSession().open(authType, this);
   }
 
   /**
@@ -277,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onSessionOpened() {
+      Log.d(TAG, "onSessionOpen");
       if (Session.getCurrentSession().getTokenInfo() != null) {
         Toast.makeText(
             MainActivity.this,
@@ -288,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onSessionOpenFailed(KakaoException exception) {
+      Log.d(TAG, "onSessionOpenFailed");
       if(exception != null) {
         Logger.e(exception);
       }
